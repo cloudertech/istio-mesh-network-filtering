@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: ipify
+spec:
+  hosts:
+  - api.ipify.org
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+  resolution: DNS

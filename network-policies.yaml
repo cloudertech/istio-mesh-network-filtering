@@ -1,0 +1,86 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all-egress
+  namespace: secpoc
+spec:
+  podSelector: {}
+  egress:
+   - to:
+     - namespaceSelector:
+         matchLabels:
+           networking/namespace: kube-system
+       podSelector:
+         matchLabels:
+           k8s-app: kube-dns
+     ports:
+     - protocol: TCP
+       port: 53
+     - protocol: UDP
+       port: 53
+  policyTypes:
+  - Egress
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-istiod
+  namespace: secpoc
+spec:
+  podSelector: {}
+  egress:
+   - to:
+     - namespaceSelector:
+         matchLabels:
+           networking/namespace: istio-system
+       podSelector:
+         matchLabels:
+           app: istiod
+     ports:
+     - protocol: TCP
+       port: 15010
+     - protocol: TCP
+       port: 15012
+     - protocol: TCP
+       port: 443
+     - protocol: TCP
+       port: 15014
+     - protocol: TCP
+       port: 853
+  policyTypes:
+  - Egress
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: through-egress-gateway
+  namespace: secpoc
+spec:
+  podSelector:
+    matchLabels:
+      networking/allow-through-egress-gateway: "true"
+  egress:
+   - to:
+     - namespaceSelector:
+         matchLabels:
+           networking/namespace: istio-system
+       podSelector:
+         matchLabels:
+           app: istio-egressgateway
+  policyTypes:
+  - Egress
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: default-deny
+  namespace: altsecpoc
+spec:
+  podSelector:
+    matchLabels: {}
