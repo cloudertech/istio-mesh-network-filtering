@@ -1,7 +1,8 @@
 # Prerequisities
+```
   Istio service mesh installed
   Kubernetes 1.17 (AWS EKS)
-
+```
 
 # Create a namespace (secpoc)
 ```
